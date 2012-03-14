@@ -126,6 +126,16 @@ class Literal(BackendASTNode):
 
     __str__ = unparse
 
+class Constant(BackendASTNode):
+
+    def __init__(self, value):
+        self._value = str(value)
+
+    def unparse(self):
+        return self._value
+
+    __str__ = unparse
+
 class InitialiserList(BackendASTNode):
 
     def __init__(self, array):
@@ -231,6 +241,16 @@ class FunctionDefinition(BackendASTNode, ModifierMixin):
         params = self._params.unparse()
         body = self._body.unparse()
         return '%s%s %s%s\n%s' % (mod, t, self._name, params, body)
+
+    __str__ = unparse
+
+class FunctionPointer(BackendASTNode):
+
+    def __init__(self, value):
+        self._value = str(value)
+
+    def unparse(self):
+        return self._value
 
     __str__ = unparse
 
