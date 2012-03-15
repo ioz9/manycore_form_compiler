@@ -211,20 +211,16 @@ class ExpressionList(BackendASTNode):
 
     def unparse(self, indent = None):
 
-        if indent:
-            class indenter:
-                # Current line length
-                ll = indent + indentLevel + 1
-                baseindent = ll
-                def __call__(self, s):
-                    self.ll += len(s) + 2
-                    if self.ll < 80:
-                        return s
-                    self.ll = self.baseindent + len(s) + 2
-                    return '\n' + ' ' * self.baseindent + s
-            newl = indenter()
-        else:
-            newl = lambda x: x
+        class indenter:
+            # Current line length
+            ll = indentLevel
+            def __call__(self, s):
+                self.ll += len(s) + 2
+                if self.ll < LINELENGTH:
+                    return s
+                self.ll = indentLevel + len(s) + 2
+                return '\n' + ' ' * indentLevel + s
+        newl = indenter()
 
         return '(' + ', '.join([newl(e.unparse()) for e in self._expressions]) + ')'
 
@@ -281,7 +277,9 @@ class FunctionCall(BackendASTNode):
 
     def unparse(self):
         name = self.unparse_name()
+        incIndent(len(name)+1)
         params = self._params.unparse(len(name))
+        decIndent(len(name)+1)
         return '%s%s' % (name, params)
 
     __str__ = unparse
@@ -328,12 +326,11 @@ class Scope(BackendASTNode):
                 return s
 
     def unparse(self):
-        indent = getIndent()
-        code = indent + '{\n'
-        indent = incIndent()
-        code += '\n'.join([indent + s.unparse() + ';' for s in self._statements])
-        indent = decIndent()
-        code += '\n' + indent + '}'
+        code = getIndent() + '{\n'
+        incIndent()
+        code += '\n'.join([getIndent() + s.unparse() + ';' for s in self._statements])
+        decIndent()
+        code += '\n' + getIndent() + '}'
         return code
 
     __str__ = unparse
@@ -650,18 +647,18 @@ def buildConstArrayInitializer(arrayName, values):
 
 indentLevel = 0
 indentSize = 2
+# FIXME: currently only respected by FunctionCall
+LINELENGTH = 80
 
 def getIndent():
     return ' ' * indentLevel
 
-def incIndent():
+def incIndent(size=indentSize):
     global indentLevel
-    indentLevel = indentLevel + indentSize
-    return getIndent()
+    indentLevel += size
 
-def decIndent():
+def decIndent(size=indentSize):
     global indentLevel
-    indentLevel = indentLevel - indentSize
-    return getIndent()
+    indentLevel -= size
 
 # vim:sw=4:ts=4:sts=4:et

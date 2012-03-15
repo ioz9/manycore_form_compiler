@@ -342,7 +342,8 @@ extern "C" void finalise_gpu_()
 extern "C" void run_model_(double* dt_pointer)
 {
   op_par_loop(A, "A", elements, 
-              op_arg_mat(Tracer_mat, OP_ALL, Tracer_map, OP_ALL, Tracer_map, OP_INC), 
+              op_arg_mat(Tracer_mat, OP_ALL, Tracer_map, OP_ALL, Tracer_map, 
+                         OP_INC), 
               op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ));
   op_par_loop(rhs, "rhs", elements, 
               op_arg_dat(Tracer_vec, OP_ALL, Tracer_map, OP_INC), 
