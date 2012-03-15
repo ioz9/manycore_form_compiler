@@ -276,8 +276,11 @@ class FunctionCall(BackendASTNode):
         self._name = name
         self._params = ExpressionList(params)
 
+    def unparse_name(self):
+        return self._name
+
     def unparse(self):
-        name = self._name
+        name = self.unparse_name()
         params = self._params.unparse(len(name))
         return '%s%s' % (name, params)
 
@@ -292,10 +295,7 @@ class CudaKernelCall(FunctionCall):
         self._shMemSize = shMemSize
         self._stream = stream
 
-    def unparse(self):
-        name = self._name
-        params = self._params.unparse()
-
+    def unparse_name(self):
         gridDim = self._gridDim.unparse()
         blockDim = self._blockDim.unparse()
         config = '%s,%s' % (gridDim, blockDim)
@@ -305,9 +305,7 @@ class CudaKernelCall(FunctionCall):
             if self._stream is not None:
                 config += ',' + self._stream.unparse()
 
-        return '%s<<<%s>>>%s' % (name, config, params)
-
-    __str__ = unparse
+        return '%s<<<%s>>>' % (self._name, config)
 
 class Scope(BackendASTNode):
 
