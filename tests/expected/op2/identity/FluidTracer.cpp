@@ -165,8 +165,13 @@ extern "C" void finalise_gpu_()
 
 extern "C" void run_model_(double* dt_pointer)
 {
-  op_par_loop(a, "a", elements, op_arg_mat(Tracer_mat, OP_ALL, Tracer_map, OP_ALL, Tracer_map, OP_INC), op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ));
-  op_par_loop(L, "L", elements, op_arg_dat(Tracer_vec, OP_ALL, Tracer_map, OP_INC), op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ), op_arg_dat(Tracer_data, OP_ALL, Tracer_map, OP_READ));
+  op_par_loop(a, "a", elements, 
+              op_arg_mat(Tracer_mat, OP_ALL, Tracer_map, OP_ALL, Tracer_map, OP_INC), 
+              op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ));
+  op_par_loop(L, "L", elements, 
+              op_arg_dat(Tracer_vec, OP_ALL, Tracer_map, OP_INC), 
+              op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ), 
+              op_arg_dat(Tracer_data, OP_ALL, Tracer_map, OP_READ));
   op_solve(Tracer_mat, Tracer_vec, Tracer_data);
 }
 

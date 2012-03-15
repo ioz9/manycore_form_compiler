@@ -312,8 +312,13 @@ extern "C" void finalise_gpu_()
 
 extern "C" void run_model_(double* dt_pointer)
 {
-  op_par_loop(A, "A", elements, op_arg_mat(Velocity_mat, OP_ALL, Velocity_map, OP_ALL, Velocity_map, OP_INC), op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ));
-  op_par_loop(RHS, "RHS", elements, op_arg_dat(Velocity_vec, OP_ALL, Velocity_map, OP_INC), op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ), op_arg_dat(Velocity_data, OP_ALL, Velocity_map, OP_READ));
+  op_par_loop(A, "A", elements, 
+              op_arg_mat(Velocity_mat, OP_ALL, Velocity_map, OP_ALL, Velocity_map, OP_INC), 
+              op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ));
+  op_par_loop(RHS, "RHS", elements, 
+              op_arg_dat(Velocity_vec, OP_ALL, Velocity_map, OP_INC), 
+              op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ), 
+              op_arg_dat(Velocity_data, OP_ALL, Velocity_map, OP_READ));
   op_solve(Velocity_mat, Velocity_vec, Velocity_data);
 }
 

@@ -443,11 +443,22 @@ extern "C" void finalise_gpu_()
 
 extern "C" void run_model_(double* dt_pointer)
 {
-  op_par_loop(M, "M", elements, op_arg_mat(t_adv_mat, OP_ALL, Tracer_map, OP_ALL, Tracer_map, OP_INC), op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ));
-  op_par_loop(adv_rhs, "adv_rhs", elements, op_arg_dat(t_adv_vec, OP_ALL, Tracer_map, OP_INC), op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ), op_arg_dat(Velocity_data, OP_ALL, Velocity_map, OP_READ), op_arg_dat(Tracer_data, OP_ALL, Tracer_map, OP_READ));
+  op_par_loop(M, "M", elements, 
+              op_arg_mat(t_adv_mat, OP_ALL, Tracer_map, OP_ALL, Tracer_map, OP_INC), 
+              op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ));
+  op_par_loop(adv_rhs, "adv_rhs", elements, 
+              op_arg_dat(t_adv_vec, OP_ALL, Tracer_map, OP_INC), 
+              op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ), 
+              op_arg_dat(Velocity_data, OP_ALL, Velocity_map, OP_READ), 
+              op_arg_dat(Tracer_data, OP_ALL, Tracer_map, OP_READ));
   op_solve(t_adv_mat, t_adv_vec, t_adv);
-  op_par_loop(A, "A", elements, op_arg_mat(Tracer_mat, OP_ALL, Tracer_map, OP_ALL, Tracer_map, OP_INC), op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ));
-  op_par_loop(diff_rhs, "diff_rhs", elements, op_arg_dat(Tracer_vec, OP_ALL, Tracer_map, OP_INC), op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ), op_arg_dat(t_adv, OP_ALL, Tracer_map, OP_READ));
+  op_par_loop(A, "A", elements, 
+              op_arg_mat(Tracer_mat, OP_ALL, Tracer_map, OP_ALL, Tracer_map, OP_INC), 
+              op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ));
+  op_par_loop(diff_rhs, "diff_rhs", elements, 
+              op_arg_dat(Tracer_vec, OP_ALL, Tracer_map, OP_INC), 
+              op_arg_dat(Coordinate_data, OP_ALL, Coordinate_map, OP_READ), 
+              op_arg_dat(t_adv, OP_ALL, Tracer_map, OP_READ));
   op_solve(Tracer_mat, Tracer_vec, Tracer_data);
 }
 
