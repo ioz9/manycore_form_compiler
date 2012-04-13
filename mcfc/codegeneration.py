@@ -258,12 +258,14 @@ class FunctionDefinition(BackendASTNode, ModifierMixin):
     def prepend(self, statement):
         self._body.prepend(statement)
 
-    def unparse(self):
+    def unparse_declaration(self):
         mod = self.unparse_modifier()
         t = self._t.unparse()
         params = self._params.unparse()
-        body = self._body.unparse()
-        return '%s%s %s%s\n%s' % (mod, t, self._name, params, body)
+        return '%s%s %s%s' % (mod, t, self._name, params)
+
+    def unparse(self):
+        return '%s\n%s' % (self.unparse_declaration(), self._body.unparse())
 
     __str__ = unparse
 
